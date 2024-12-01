@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import java.rmi.UnexpectedException;
+
 @ControllerAdvice
 public class ExceptionHandler {
 
@@ -23,5 +25,10 @@ public class ExceptionHandler {
         InvalidPasswordExceptionDto dto = new InvalidPasswordExceptionDto();
         dto.setMessage(invalidPasswordException.getMessage());
         return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(UnexpectedException.class)
+    public ResponseEntity<String> handleUnexpectedException(UnexpectedException unexpectedException){
+        return new ResponseEntity<>(unexpectedException.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

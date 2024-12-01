@@ -10,10 +10,9 @@ import com.example.user_service.models.User;
 import com.example.user_service.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.rmi.UnexpectedException;
 
 @RestController
 @RequestMapping("/users")
@@ -34,5 +33,11 @@ public class UserController {
     public ResponseEntity<Token> login(@RequestBody LoginRequestDto loginRequetDto) throws UserNotFoundException, InvalidPasswordException {
         Token token = userService.login(loginRequetDto.getEmail(), loginRequetDto.getPassword());
         return new ResponseEntity<>(token, HttpStatus.OK);
+    }
+
+    @GetMapping("/validate/{token}")
+    public ResponseEntity<User> validateToken(@PathVariable("token") String token) throws UnexpectedException {
+        User user = userService.validateToken(token);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

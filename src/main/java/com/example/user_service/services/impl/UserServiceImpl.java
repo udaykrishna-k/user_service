@@ -11,6 +11,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.rmi.UnexpectedException;
 import java.util.Optional;
 
 @Service
@@ -47,6 +48,15 @@ public class UserServiceImpl implements UserService {
         }
         Token token = generateToken(user);
         return tokenRepo.save(token);
+    }
+
+    @Override
+    public User validateToken(String token) throws UnexpectedException {
+        Optional<Token> optionalToken = tokenRepo.findByValueAndExpiryAtGreaterThan(token, System.currentTimeMillis());
+        if (optionalToken.isEmpty()) {
+            throw new UnexpectedException("Something went wrong");
+        }
+        return optionalToken.get().getUser();
     }
 
     private Token generateToken(User user) {
