@@ -51,10 +51,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User validateToken(String token) throws UnexpectedException {
+    public User validateToken(String token) {
         Optional<Token> optionalToken = tokenRepo.findByValueAndExpiryAtGreaterThan(token, System.currentTimeMillis());
         if (optionalToken.isEmpty()) {
-            throw new UnexpectedException("Something went wrong");
+            return null;
         }
         return optionalToken.get().getUser();
     }
